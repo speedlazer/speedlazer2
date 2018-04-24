@@ -2,6 +2,7 @@ const path = require("path");
 const supportedBrowsers = require("browserslist").readConfig(
   path.join(__dirname, "browserslist")
 ).defaults;
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const babel = {
   presets: [
@@ -24,18 +25,26 @@ const babel = {
 module.exports = {
   entry: "./src/index.js",
   output: {
-    filename: "bundle.js",
+    filename: "[name].[hash].js",
     path: path.resolve(__dirname, "build")
   },
+  resolve: {
+    alias: {
+      src: path.resolve(__dirname, "src/")
+    },
+    extensions: [".js"]
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "src/index.html"
+    })
+  ],
   devServer: {
     contentBase: path.resolve(__dirname, "./"),
-    publicPath: "/build/",
     host: "127.0.0.1",
     port: 8080,
     open: true
-  },
-  resolve: {
-    extensions: [".js"]
   },
   module: {
     rules: [
