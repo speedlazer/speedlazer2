@@ -1,0 +1,16 @@
+{
+  "name": "SpeedLazer",
+  "version": "2.0.0",
+  "description": "2D sidescrolling shmup",
+  "main": "index.js",
+  "repository": "http://speedlazer.net",
+  "author": "Matthijs Groen <matthijs.groen@gmail.com>",
+  "contributors": [
+    "Marciano Schildmeijer <marciano_schildmeijer@live.nl>"
+  ],
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "phaser": "^3.6.0"
+  }
+}
