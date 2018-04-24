@@ -35,7 +35,7 @@ module.exports = {
     open: true
   },
   resolve: {
-    extensions: [".js"],
+    extensions: [".js"]
   },
   module: {
     rules: [
