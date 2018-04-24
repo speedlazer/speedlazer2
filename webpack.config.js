@@ -3,6 +3,7 @@ const supportedBrowsers = require("browserslist").readConfig(
   path.join(__dirname, "browserslist")
 ).defaults;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 const babel = {
   presets: [
@@ -36,6 +37,7 @@ module.exports = {
   },
 
   plugins: [
+    new CleanWebpackPlugin(["build"]),
     new HtmlWebpackPlugin({
       template: "src/index.html"
     })
