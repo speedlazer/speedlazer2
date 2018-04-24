@@ -2,6 +2,7 @@ const path = require("path");
 const supportedBrowsers = require("browserslist").readConfig(
   path.join(__dirname, "browserslist")
 ).defaults;
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 
@@ -40,6 +41,10 @@ module.exports = {
     new CleanWebpackPlugin(["build"]),
     new HtmlWebpackPlugin({
       template: "src/index.html"
+    }),
+    new webpack.DefinePlugin({
+      CANVAS_RENDERER: JSON.stringify(true),
+      WEBGL_RENDERER: JSON.stringify(true)
     })
   ],
   devServer: {
@@ -55,6 +60,10 @@ module.exports = {
         loader: "babel-loader",
         exclude: /node_modules/,
         options: babel
+      },
+      {
+        test: [/\.vert$/, /\.frag$/],
+        use: "raw-loader"
       }
     ]
   }
