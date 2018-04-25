@@ -2,45 +2,73 @@
 
 import Phaser from "phaser";
 
-const SpeedLazer = {
+class Boot extends Phaser.Scene {
+  constructor() {
+    super({ key: "Boot" });
+  }
+
   preload() {
-    this.ship = Object.create(Ship);
-    this.ship.init();
-    this.ship.loadSprite.call(this, "arwing");
-  },
+    this.load.image("arwing", "assets/arwing.png");
+  }
 
   create() {
-    this.ship.addSprite.call(this, 200, 200, "arwing");
+    this.scene.start("SpeedLazer");
   }
-};
+}
 
-const Ship = {
-  init(x, y, type) {
-    this.x = x;
-    this.y = y;
-    this.type = type;
-  },
+class SpeedLazer extends Phaser.Scene {
+  constructor() {
+    super({ key: "SpeedLazer" });
 
-  loadSprite(type) {
-    this.load.image(type, "assets/arwing.png");
-  },
-
-  addSprite(x, y, type) {
-    this.add.image(x, y, type);
+    this.MAX_SPEED = 5;
   }
-};
 
-const speedlazer = Object.create(SpeedLazer);
+  create() {
+    this.ship = new Ship(this, 200, 200, "arwing");
+
+    const KEYS = {
+      up: Phaser.Input.Keyboard.KeyCodes.UP,
+      down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+      left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+      right: Phaser.Input.Keyboard.KeyCodes.RIGHT
+    };
+
+    this.key = {
+      up: this.input.keyboard.addKey(KEYS.up),
+      down: this.input.keyboard.addKey(KEYS.down),
+      left: this.input.keyboard.addKey(KEYS.left),
+      right: this.input.keyboard.addKey(KEYS.right)
+    };
+  }
+
+  update() {
+    const key = this.key;
+
+    if (key.up.isDown) {
+      this.ship.y -= this.MAX_SPEED;
+    } else if (key.down.isDown) {
+      this.ship.y += this.MAX_SPEED;
+    } else if (key.left.isDown) {
+      this.ship.x -= this.MAX_SPEED;
+    } else if (key.right.isDown) {
+      this.ship.x += this.MAX_SPEED;
+    }
+  }
+}
+
+class Ship extends Phaser.GameObjects.Sprite {
+  constructor(scene, x, y, type) {
+    super(scene, x, y, type);
+    scene.add.existing(this);
+    this.scaleX = +-1;
+  }
+}
 
 const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  scene: {
-    preload: speedlazer.preload,
-    create: speedlazer.create,
-    update: speedlazer.update
-  }
+  scene: [Boot, SpeedLazer]
 };
 
 new Phaser.Game(config);
