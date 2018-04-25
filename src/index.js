@@ -26,7 +26,6 @@ class SpeedLazer extends Phaser.Scene {
 
   create() {
     this.sky = this.add.tileSprite(0, 0, 1920, 1920, "background");
-    console.log(this.sky);
 
     this.ship = new Ship(this, 200, 200, "arwing");
 
