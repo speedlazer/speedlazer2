@@ -9,6 +9,7 @@ class Boot extends Phaser.Scene {
 
   preload() {
     this.load.image("arwing", "assets/arwing.png");
+    this.load.image("background", "assets/sky.jpg");
   }
 
   create() {
@@ -24,6 +25,9 @@ class SpeedLazer extends Phaser.Scene {
   }
 
   create() {
+    this.sky = this.add.tileSprite(0, 0, 1920, 1920, "background");
+    console.log(this.sky);
+
     this.ship = new Ship(this, 200, 200, "arwing");
 
     const KEYS = {
@@ -43,6 +47,9 @@ class SpeedLazer extends Phaser.Scene {
 
   update() {
     const key = this.key;
+
+    // tile position instead of x property to prevent scrolling to the 'end'.
+    this.sky.tilePositionX += 1;
 
     if (key.up.isDown) {
       this.ship.y -= this.MAX_SPEED;
