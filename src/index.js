@@ -2,26 +2,44 @@
 
 import Phaser from "phaser";
 
-const preload = () => {
-  // console.log("preload")
+const SpeedLazer = {
+  preload() {
+    this.ship = Object.create(Ship);
+    this.ship.init();
+    this.ship.loadSprite.call(this, "arwing");
+  },
+
+  create() {
+    this.ship.addSprite.call(this, 200, 200, "arwing");
+  }
 };
 
-const create = () => {
-  // console.log("create")
+const Ship = {
+  init(x, y, type) {
+    this.x = x;
+    this.y = y;
+    this.type = type;
+  },
+
+  loadSprite(type) {
+    this.load.image(type, "assets/arwing.png");
+  },
+
+  addSprite(x, y, type) {
+    this.add.image(x, y, type);
+  }
 };
 
-const update = () => {
-  // console.log("update")
-};
+const speedlazer = Object.create(SpeedLazer);
 
 const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
   scene: {
-    preload: preload,
-    create: create,
-    update: update
+    preload: speedlazer.preload,
+    create: speedlazer.create,
+    update: speedlazer.update
   }
 };
 
