@@ -62,6 +62,17 @@ module.exports = {
         options: babel
       },
       {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              outputPath: "assets/"
+            }
+          }
+        ]
+      },
+      {
         test: [/\.vert$/, /\.frag$/],
         use: "raw-loader"
       }
