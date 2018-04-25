@@ -18,9 +18,27 @@ class GamePlay extends Phaser.Scene {
     //console.log("create")
     this.ship = this.add.sprite(400, 300, "playerShip", 0);
 
+    this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+    this.right = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.RIGHT
+    );
+    this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+    this.down = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
   }
 
   update() {
+    if (this.left.isDown) {
+      this.ship.x -= 3;
+    }
+    if (this.right.isDown) {
+      this.ship.x += 3;
+    }
+    if (this.up.isDown) {
+      this.ship.y -= 3;
+    }
+    if (this.down.isDown) {
+      this.ship.y += 3;
+    }
     //console.log("update")
   }
 }
