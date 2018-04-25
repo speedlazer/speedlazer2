@@ -1,28 +1,12 @@
 //import "babel-polyfill";
-
 import Phaser from "phaser";
-
-const preload = () => {
-  // console.log("preload")
-};
-
-const create = () => {
-  // console.log("create")
-};
-
-const update = () => {
-  // console.log("update")
-};
+import GamePlay from "src/scenes/game-play.js";
 
 const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  scene: {
-    preload: preload,
-    create: create,
-    update: update
-  }
+  scene: [GamePlay]
 };
 
 new Phaser.Game(config);
