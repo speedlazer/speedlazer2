@@ -14,8 +14,8 @@
     "phaser": "^3.6.0"
   },
   "scripts": {
-    "start": "webpack && webpack-dev-server --mode=development",
-    "build": "webpack && webpack-dev-server --mode=production",
+    "start": "webpack ---mode=development && webpack-dev-server --mode=development",
+    "build": "webpack --mode=production && webpack-dev-server --mode=production",
     "lint": "eslint src",
     "prettier": "yarn run prettier:js",
     "prettier:js": "prettier '{,!(node_modules|bundle)/**/}*.js' --write",
