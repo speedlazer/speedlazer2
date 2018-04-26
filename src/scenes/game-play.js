@@ -11,12 +11,13 @@ class GamePlay extends Phaser.Scene {
       frameWidth: 96,
       frameHeight: 64
     });
-    //console.log("preload", playerShipImage)
   }
 
   create() {
-    //console.log("create")
-    this.ship = this.add.sprite(400, 300, "playerShip", 0);
+    this.ship = this.physics.add.sprite(400, 300, "playerShip", 0);
+    this.ship.body.allowDrag = true;
+    this.ship.body.drag.x = 1000;
+    this.ship.body.drag.y = 1000;
 
     this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     this.right = this.input.keyboard.addKey(
@@ -28,18 +29,17 @@ class GamePlay extends Phaser.Scene {
 
   update() {
     if (this.left.isDown) {
-      this.ship.x -= 3;
+      this.ship.body.velocity.x = -300;
     }
     if (this.right.isDown) {
-      this.ship.x += 3;
+      this.ship.body.velocity.x = 300;
     }
     if (this.up.isDown) {
-      this.ship.y -= 3;
+      this.ship.body.velocity.y = -300;
     }
     if (this.down.isDown) {
-      this.ship.y += 3;
+      this.ship.body.velocity.y = 300;
     }
-    //console.log("update")
   }
 }
 
