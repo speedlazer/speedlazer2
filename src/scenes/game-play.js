@@ -16,6 +16,11 @@ class GamePlay extends Phaser.Scene {
   }
 
   create() {
+    this.createShip();
+    this.createControls();
+  }
+
+  createShip() {
     const particles = this.add.particles("particles");
     const zone = new Phaser.Geom.Circle(0, 0, 10);
     const emitter = particles.createEmitter({
@@ -36,28 +41,32 @@ class GamePlay extends Phaser.Scene {
     this.ship.body.allowDrag = true;
     this.ship.body.drag.x = 1000;
     this.ship.body.drag.y = 1000;
-
     emitter.startFollow(this.ship);
+    this.ship.setCollideWorldBounds(true);
+  }
 
-    this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-    this.right = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.RIGHT
-    );
-    this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-    this.down = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+  createControls() {
+    this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   update() {
-    if (this.left.isDown) {
+    this.updateShipControls();
+  }
+
+  updateShipControls() {
+    this.ship.setFrame(0);
+    if (this.cursors.left.isDown) {
       this.ship.body.velocity.x = -300;
     }
-    if (this.right.isDown) {
+    if (this.cursors.right.isDown) {
       this.ship.body.velocity.x = 300;
     }
-    if (this.up.isDown) {
+    if (this.cursors.up.isDown) {
+      this.ship.setFrame(2);
       this.ship.body.velocity.y = -300;
     }
-    if (this.down.isDown) {
+    if (this.cursors.down.isDown) {
+      this.ship.setFrame(1);
       this.ship.body.velocity.y = 300;
     }
   }
