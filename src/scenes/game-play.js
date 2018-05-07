@@ -6,12 +6,6 @@ import meteorImage from "src/assets/sprites/meteor.png";
 class GamePlay extends Phaser.Scene {
   constructor() {
     super({ key: "gameplay" });
-
-    this.lives = 5;
-    this.score = 0;
-    this.timeScore = 0;
-
-    this.collisionCooldowns = {};
   }
 
   preload() {
@@ -24,6 +18,11 @@ class GamePlay extends Phaser.Scene {
   }
 
   create() {
+    this.lives = 5;
+    this.score = 0;
+    this.timeScore = 0;
+    this.collisionCooldowns = {};
+
     this.meteors = this.physics.add.group({});
     this.scoreText = this.add.text(10, 10, `Score: ${this.score}`);
     this.livesText = this.add.text(400, 10, `Lives: ${this.lives}`);
@@ -52,6 +51,10 @@ class GamePlay extends Phaser.Scene {
 
   meteorImpact() {
     this.lives -= 1;
+
+    if (this.lives < 0) {
+      this.scene.start("gameover", { score: this.score });
+    }
   }
 
   createShip() {
@@ -73,8 +76,8 @@ class GamePlay extends Phaser.Scene {
 
     this.ship = this.physics.add.sprite(400, 300, "playerShip", 0);
     this.ship.body.allowDrag = true;
-    this.ship.body.drag.x = 1000;
-    this.ship.body.drag.y = 1000;
+    this.ship.body.drag.x = 500;
+    this.ship.body.drag.y = 500;
     emitter.startFollow(this.ship);
     this.ship.setCollideWorldBounds(true);
   }
@@ -95,7 +98,7 @@ class GamePlay extends Phaser.Scene {
       this.meteorCooldown = 5e3 + Math.random() * 1000;
     }
     this.updateShipControls();
-    this.timeScore = Math.floor(time / 3000) * 10;
+    this.timeScore += delta;
 
     for (let obj in this.collisionCooldowns) {
       this.collisionCooldowns[obj] -= delta;
@@ -104,7 +107,8 @@ class GamePlay extends Phaser.Scene {
       }
     }
 
-    if (this.score < this.timeScore) {
+    const maxTimeScore = Math.floor(this.timeScore / 3000) * 10;
+    if (this.score < maxTimeScore) {
       this.score += 1;
     }
 

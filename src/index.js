@@ -1,6 +1,7 @@
 //import "babel-polyfill";
 import Phaser from "phaser";
 import GamePlay from "src/scenes/game-play.js";
+import GameOver from "src/scenes/game-over.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -9,7 +10,7 @@ const config = {
   physics: {
     default: "arcade"
   },
-  scene: [GamePlay]
+  scene: [GamePlay, GameOver]
 };
 
 new Phaser.Game(config);
