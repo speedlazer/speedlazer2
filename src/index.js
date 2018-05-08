@@ -20,15 +20,34 @@ class Boot extends Phaser.Scene {
 class SpeedLazer extends Phaser.Scene {
   constructor() {
     super({ key: "SpeedLazer" });
-
-    this.MAX_SPEED = 5;
   }
 
   create() {
+    // To be refactored soon.
     this.sky = this.add.tileSprite(0, 0, 1920, 1920, "background");
 
     this.ship = new Ship(this, 200, 200, "arwing");
+    this.ship.create(this.input, this.key);
+  }
 
+  update() {
+    this.ship.update(this.key);
+    // tile position instead of x property to prevent scrolling to the 'end'.
+    this.sky.tilePositionX += 1;
+  }
+}
+
+class Ship extends Phaser.GameObjects.Sprite {
+  constructor(scene, x, y, type) {
+    super(scene, x, y, type);
+
+    this.MAX_SPEED = 5;
+
+    scene.add.existing(this);
+    this.scaleX = +-1;
+  }
+
+  create(input) {
     const KEYS = {
       up: Phaser.Input.Keyboard.KeyCodes.UP,
       down: Phaser.Input.Keyboard.KeyCodes.DOWN,
@@ -37,38 +56,39 @@ class SpeedLazer extends Phaser.Scene {
     };
 
     this.key = {
-      up: this.input.keyboard.addKey(KEYS.up),
-      down: this.input.keyboard.addKey(KEYS.down),
-      left: this.input.keyboard.addKey(KEYS.left),
-      right: this.input.keyboard.addKey(KEYS.right)
+      up: input.keyboard.addKey(KEYS.up),
+      down: input.keyboard.addKey(KEYS.down),
+      left: input.keyboard.addKey(KEYS.left),
+      right: input.keyboard.addKey(KEYS.right)
     };
   }
 
   update() {
-    const key = this.key;
-
-    // tile position instead of x property to prevent scrolling to the 'end'.
-    this.sky.tilePositionX += 1;
-
-    if (key.up.isDown) {
-      this.ship.y -= this.MAX_SPEED;
-    } else if (key.down.isDown) {
-      this.ship.y += this.MAX_SPEED;
-    } else if (key.left.isDown) {
-      this.ship.x -= this.MAX_SPEED;
-    } else if (key.right.isDown) {
-      this.ship.x += this.MAX_SPEED;
+    if (this.key.up.isDown) {
+      this.y -= this.MAX_SPEED;
+    } else if (this.key.down.isDown) {
+      this.y += this.MAX_SPEED;
+    } else if (this.key.left.isDown) {
+      this.x -= this.MAX_SPEED;
+    } else if (this.key.right.isDown) {
+      this.x += this.MAX_SPEED;
     }
   }
+
+  // console.log(this.bullets);
 }
 
-class Ship extends Phaser.GameObjects.Sprite {
-  constructor(scene, x, y, type) {
-    super(scene, x, y, type);
-    scene.add.existing(this);
-    this.scaleX = +-1;
-  }
-}
+// class Bullet extends Phaser.GameObjects.Sprite {
+//   constructor(scene, x, y) {
+//     super(scene, x, y, 'bullet');
+//     console.log('Bullet');
+//     scene.add.existing(this);
+//   }
+//
+//   fire() {
+//     console.log('fire!');
+//   }
+// }
 
 const config = {
   type: Phaser.AUTO,
