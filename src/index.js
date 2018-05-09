@@ -42,7 +42,7 @@ class Ship extends Phaser.GameObjects.Sprite {
     super(scene, x, y, type);
 
     this.MAX_SPEED = 5;
-    this.speedlazerScene = this.scene;
+    this.speedlazerScene = scene;
     scene.add.existing(this);
     this.scaleX = +-1;
   }
@@ -52,21 +52,21 @@ class Ship extends Phaser.GameObjects.Sprite {
       up: Phaser.Input.Keyboard.KeyCodes.UP,
       down: Phaser.Input.Keyboard.KeyCodes.DOWN,
       left: Phaser.Input.Keyboard.KeyCodes.LEFT,
-      right: Phaser.Input.Keyboard.KeyCodes.RIGHT
+      right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+      spacebar: Phaser.Input.Keyboard.KeyCodes.SPACE
     };
 
     this.key = {
       up: this.speedlazerScene.input.keyboard.addKey(KEYS.up),
       down: this.speedlazerScene.input.keyboard.addKey(KEYS.down),
       left: this.speedlazerScene.input.keyboard.addKey(KEYS.left),
-      right: this.speedlazerScene.input.keyboard.addKey(KEYS.right)
+      right: this.speedlazerScene.input.keyboard.addKey(KEYS.right),
+      spacebar: this.speedlazerScene.input.keyboard.addKey(KEYS.spacebar)
     };
-  }
 
-  addBullets() {
-    this.bullets = this.add.group({
+    this.bullets = this.speedlazerScene.add.group({
       classType: Bullet,
-      maxSize: 10,
+      key: "bullet",
       runChildUpdate: true
     });
   }
@@ -80,19 +80,24 @@ class Ship extends Phaser.GameObjects.Sprite {
       this.x -= this.MAX_SPEED;
     } else if (this.key.right.isDown) {
       this.x += this.MAX_SPEED;
+    } else if (this.key.spacebar.isDown) {
+      let bullet = this.bullets.get();
+
+      if (bullet) {
+        bullet.fire();
+      }
     }
   }
 }
 
 class Bullet extends Phaser.GameObjects.Sprite {
-  constructor(scene, x, y) {
-    super(scene, x, y, "bullet");
-    // console.log("Bullet");
-    scene.add.existing(this);
+  constructor(scene) {
+    super(scene, 0, 0, "bullet");
   }
 
   fire() {
-    // console.log("fire!");
+    /* eslint-disable no-console */
+    console.log("IMMA FIRIN MA BULLETS");
   }
 }
 
