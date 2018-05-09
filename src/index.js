@@ -27,7 +27,7 @@ class SpeedLazer extends Phaser.Scene {
     this.sky = this.add.tileSprite(0, 0, 1920, 1920, "background");
 
     this.ship = new Ship(this, 200, 200, "arwing");
-    this.ship.create(this.input, this.key);
+    this.ship.create();
   }
 
   update() {
@@ -42,12 +42,12 @@ class Ship extends Phaser.GameObjects.Sprite {
     super(scene, x, y, type);
 
     this.MAX_SPEED = 5;
-
+    this.speedlazerScene = this.scene;
     scene.add.existing(this);
     this.scaleX = +-1;
   }
 
-  create(input) {
+  create() {
     const KEYS = {
       up: Phaser.Input.Keyboard.KeyCodes.UP,
       down: Phaser.Input.Keyboard.KeyCodes.DOWN,
@@ -56,11 +56,19 @@ class Ship extends Phaser.GameObjects.Sprite {
     };
 
     this.key = {
-      up: input.keyboard.addKey(KEYS.up),
-      down: input.keyboard.addKey(KEYS.down),
-      left: input.keyboard.addKey(KEYS.left),
-      right: input.keyboard.addKey(KEYS.right)
+      up: this.speedlazerScene.input.keyboard.addKey(KEYS.up),
+      down: this.speedlazerScene.input.keyboard.addKey(KEYS.down),
+      left: this.speedlazerScene.input.keyboard.addKey(KEYS.left),
+      right: this.speedlazerScene.input.keyboard.addKey(KEYS.right)
     };
+  }
+
+  addBullets() {
+    this.bullets = this.add.group({
+      classType: Bullet,
+      maxSize: 10,
+      runChildUpdate: true
+    });
   }
 
   update() {
@@ -74,21 +82,19 @@ class Ship extends Phaser.GameObjects.Sprite {
       this.x += this.MAX_SPEED;
     }
   }
-
-  // console.log(this.bullets);
 }
 
-// class Bullet extends Phaser.GameObjects.Sprite {
-//   constructor(scene, x, y) {
-//     super(scene, x, y, 'bullet');
-//     console.log('Bullet');
-//     scene.add.existing(this);
-//   }
-//
-//   fire() {
-//     console.log('fire!');
-//   }
-// }
+class Bullet extends Phaser.GameObjects.Sprite {
+  constructor(scene, x, y) {
+    super(scene, x, y, "bullet");
+    // console.log("Bullet");
+    scene.add.existing(this);
+  }
+
+  fire() {
+    // console.log("fire!");
+  }
+}
 
 const config = {
   type: Phaser.AUTO,
