@@ -25,7 +25,7 @@ class GamePlay extends Phaser.Scene {
     this.scoreText = this.add.text(10, 10, `Score: ${this.score}`);
     this.livesText = this.add.text(400, 10, `Lives: ${this.lives}`);
 
-    this.createShip();
+    this.ship = new PlayerShip(this);
     this.createControls();
     this.meteorCooldown = 10e3;
     this.spawnMeteor();
@@ -53,10 +53,6 @@ class GamePlay extends Phaser.Scene {
     if (this.lives < 0) {
       this.scene.start("gameover", { score: this.score });
     }
-  }
-
-  createShip() {
-    this.ship = new PlayerShip(this);
   }
 
   createControls() {
@@ -93,22 +89,34 @@ class GamePlay extends Phaser.Scene {
     this.livesText.setText(`Lives: ${this.lives}`);
   }
 
+  axis(keyNegative, keyPositive) {
+    let result = 0;
+    if (keyNegative.isDown) result -= 1;
+    if (keyPositive.isDown) result += 1;
+    return result;
+  }
+
   updateShipControls() {
-    this.ship.setFrame(0);
-    if (this.cursors.left.isDown) {
-      this.ship.body.velocity.x = -300;
-    }
-    if (this.cursors.right.isDown) {
-      this.ship.body.velocity.x = 300;
-    }
-    if (this.cursors.up.isDown) {
-      this.ship.setFrame(2);
-      this.ship.body.velocity.y = -300;
-    }
-    if (this.cursors.down.isDown) {
-      this.ship.setFrame(1);
-      this.ship.body.velocity.y = 300;
-    }
+    this.ship.setMovementAxis({
+      x: this.axis(this.cursors.left, this.cursors.right),
+      y: this.axis(this.cursors.up, this.cursors.down)
+    });
+
+    //this.ship.setFrame(0);
+    //if (this.cursors.left.isDown) {
+    //this.ship.body.velocity.x = -300;
+    //}
+    //if (this.cursors.right.isDown) {
+    //this.ship.body.velocity.x = 300;
+    //}
+    //if (this.cursors.up.isDown) {
+    //this.ship.setFrame(2);
+    //this.ship.body.velocity.y = -300;
+    //}
+    //if (this.cursors.down.isDown) {
+    //this.ship.setFrame(1);
+    //this.ship.body.velocity.y = 300;
+    //}
   }
 }
 
