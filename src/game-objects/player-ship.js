@@ -53,6 +53,7 @@ export class PlayerShip extends Phaser.Physics.Arcade.Sprite {
   }
 
   setMovementAxis({ x, y }) {
+    if (!this.body) return;
     const maxXVelocity = 300;
     const minXVelocity = -1 * maxXVelocity;
     this.body.velocity.x = inRange(

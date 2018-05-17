@@ -5,6 +5,8 @@ import {
   preload as preloadShip
 } from "src/game-objects/player-ship";
 
+const HEALTH_PER_LIFE = 1000;
+
 class GamePlay extends Phaser.Scene {
   constructor() {
     super({ key: "gameplay" });
@@ -15,8 +17,14 @@ class GamePlay extends Phaser.Scene {
     this.load.image("meteor", meteorImage);
   }
 
+  healthToBar() {
+    const blocks = Math.ceil(this.health / 50);
+    return new Array(blocks).fill("*").join("");
+  }
+
   create() {
-    this.lives = 5;
+    this.lives = 3;
+    this.health = HEALTH_PER_LIFE;
     this.score = 0;
     this.timeScore = 0;
     this.collisionCooldowns = {};
@@ -24,31 +32,31 @@ class GamePlay extends Phaser.Scene {
     this.meteors = this.physics.add.group({});
     this.scoreText = this.add.text(10, 10, `Score: ${this.score}`);
     this.livesText = this.add.text(400, 10, `Lives: ${this.lives}`);
+    this.healthText = this.add.text(400, 25, `Health: ${this.healthToBar()}`);
 
     this.ship = new PlayerShip(this);
     this.createControls();
-    this.meteorCooldown = 10e3;
     this.spawnMeteor();
 
     this.physics.add.overlap(
       this.ship,
       this.meteors,
       this.meteorImpact,
-      this.meteorCollide,
+      null,
       this
     );
   }
 
-  meteorCollide(ship, meteor) {
-    if (this.collisionCooldowns[meteor]) {
-      return false;
-    }
-    this.collisionCooldowns[meteor] = 500;
-    return true;
-  }
+  meteorImpact(ship, meteor) {
+    const impactDamage = meteor.damage.impact.dmgPSec;
+    const applyDamage = impactDamage / 1000 * this.delta;
 
-  meteorImpact() {
-    this.lives -= 1;
+    this.health -= applyDamage;
+
+    if (this.health <= 0) {
+      this.health = HEALTH_PER_LIFE;
+      this.lives -= 1;
+    }
 
     if (this.lives < 0) {
       this.scene.start("gameover", { score: this.score });
@@ -62,23 +70,18 @@ class GamePlay extends Phaser.Scene {
   spawnMeteor() {
     const meteor = this.add.image(600, 200, "meteor");
     meteor.depth = -1;
+    meteor.damage = {
+      impact: {
+        dmgPSec: 300
+      }
+    };
     this.meteors.add(meteor);
   }
 
   update(time, delta) {
-    this.meteorCooldown -= delta;
-    if (this.meteorCooldown < 0) {
-      this.meteorCooldown = 5e3 + Math.random() * 1000;
-    }
     this.updateShipControls();
     this.timeScore += delta;
-
-    for (let obj in this.collisionCooldowns) {
-      this.collisionCooldowns[obj] -= delta;
-      if (this.collisionCooldowns[obj] <= 0) {
-        delete this.collisionCooldowns[obj];
-      }
-    }
+    this.delta = delta;
 
     const maxTimeScore = Math.floor(this.timeScore / 3000) * 10;
     if (this.score < maxTimeScore) {
@@ -87,6 +90,7 @@ class GamePlay extends Phaser.Scene {
 
     this.scoreText.setText(`Score: ${this.score}`);
     this.livesText.setText(`Lives: ${this.lives}`);
+    this.healthText.setText(`Health: ${this.healthToBar()}`);
   }
 
   axis(keyNegative, keyPositive) {
@@ -101,22 +105,6 @@ class GamePlay extends Phaser.Scene {
       x: this.axis(this.cursors.left, this.cursors.right),
       y: this.axis(this.cursors.up, this.cursors.down)
     });
-
-    //this.ship.setFrame(0);
-    //if (this.cursors.left.isDown) {
-    //this.ship.body.velocity.x = -300;
-    //}
-    //if (this.cursors.right.isDown) {
-    //this.ship.body.velocity.x = 300;
-    //}
-    //if (this.cursors.up.isDown) {
-    //this.ship.setFrame(2);
-    //this.ship.body.velocity.y = -300;
-    //}
-    //if (this.cursors.down.isDown) {
-    //this.ship.setFrame(1);
-    //this.ship.body.velocity.y = 300;
-    //}
   }
 }
 
