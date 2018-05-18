@@ -5,14 +5,16 @@ class GameOver extends Phaser.Scene {
     super({ key: "gameover" });
   }
 
-  create(args) {
-    this.add.text(80, 80, `GAME OVER. Score: ${args.score}`);
+  create({ player }) {
+    this.player = player;
+    this.add.text(80, 80, `GAME OVER. Score: ${player.score}`);
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   update() {
     if (this.cursors.space.isDown) {
-      this.scene.start("gameplay");
+      this.player.reset();
+      this.scene.start("gameplay", { player: this.player });
     }
   }
 }

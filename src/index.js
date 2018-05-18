@@ -2,6 +2,7 @@
 import Phaser from "phaser";
 import GamePlay from "src/scenes/game-play.js";
 import GameOver from "src/scenes/game-over.js";
+import Startup from "src/scenes/startup.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -10,7 +11,7 @@ const config = {
   physics: {
     default: "arcade"
   },
-  scene: [GamePlay, GameOver]
+  scene: [Startup, GamePlay, GameOver]
 };
 
 new Phaser.Game(config);

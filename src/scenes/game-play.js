@@ -22,16 +22,16 @@ class GamePlay extends Phaser.Scene {
     return new Array(blocks).fill("*").join("");
   }
 
-  create() {
-    this.lives = 3;
+  create({ player }) {
+    this.player = player;
+
     this.health = HEALTH_PER_LIFE;
-    this.score = 0;
     this.timeScore = 0;
     this.collisionCooldowns = {};
 
     this.meteors = this.physics.add.group({});
-    this.scoreText = this.add.text(10, 10, `Score: ${this.score}`);
-    this.livesText = this.add.text(400, 10, `Lives: ${this.lives}`);
+    this.scoreText = this.add.text(10, 10, `Score: ${this.player.score}`);
+    this.livesText = this.add.text(400, 10, `Lives: ${this.player.lives}`);
     this.healthText = this.add.text(400, 25, `Health: ${this.healthToBar()}`);
 
     this.ship = new PlayerShip(this);
@@ -54,12 +54,17 @@ class GamePlay extends Phaser.Scene {
     this.health -= applyDamage;
 
     if (this.health <= 0) {
+      // 1. destroy ship
+
+      // pay for new ship using a 'life'
+      this.player.lives -= 1;
+
+      // spawn new ship, with new health
       this.health = HEALTH_PER_LIFE;
-      this.lives -= 1;
     }
 
-    if (this.lives < 0) {
-      this.scene.start("gameover", { score: this.score });
+    if (this.player.isGameOver()) {
+      this.scene.start("gameover", { player: this.player });
     }
   }
 
@@ -84,12 +89,12 @@ class GamePlay extends Phaser.Scene {
     this.delta = delta;
 
     const maxTimeScore = Math.floor(this.timeScore / 3000) * 10;
-    if (this.score < maxTimeScore) {
-      this.score += 1;
+    if (this.player.score < maxTimeScore) {
+      this.player.score += 1;
     }
 
-    this.scoreText.setText(`Score: ${this.score}`);
-    this.livesText.setText(`Lives: ${this.lives}`);
+    this.scoreText.setText(`Score: ${this.player.score}`);
+    this.livesText.setText(`Lives: ${this.player.lives}`);
     this.healthText.setText(`Health: ${this.healthToBar()}`);
   }
 
