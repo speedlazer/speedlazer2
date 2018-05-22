@@ -10,6 +10,7 @@ class Boot extends Phaser.Scene {
   preload() {
     this.load.image("arwing", "assets/arwing.png");
     this.load.image("background", "assets/sky.jpg");
+    this.load.image("laser", "assets/charmander.png");
   }
 
   create() {
@@ -44,7 +45,9 @@ class Ship extends Phaser.GameObjects.Sprite {
     this.MAX_SPEED = 5;
     this.speedlazerScene = scene;
     scene.add.existing(this);
-    this.scaleX = +-1;
+    this.scaleX = -1;
+
+    this.laser = null;
   }
 
   create() {
@@ -64,11 +67,12 @@ class Ship extends Phaser.GameObjects.Sprite {
       spacebar: this.speedlazerScene.input.keyboard.addKey(KEYS.spacebar)
     };
 
-    this.bullets = this.speedlazerScene.add.group({
-      classType: Bullet,
-      key: "bullet",
-      runChildUpdate: true
+    this.laser = this.speedlazerScene.add.group({
+      classType: Laser,
+      runChildUpdate: true // runs the update function from the specified class.
     });
+
+    // console.log(this.laser);
   }
 
   update() {
@@ -81,25 +85,52 @@ class Ship extends Phaser.GameObjects.Sprite {
     } else if (this.key.right.isDown) {
       this.x += this.MAX_SPEED;
     } else if (this.key.spacebar.isDown) {
-      let bullet = this.bullets.get();
-
-      if (bullet) {
-        bullet.fire();
-      }
+      this.laser.get().fire();
     }
   }
 }
 
-class Bullet extends Phaser.GameObjects.Sprite {
+class Laser extends Phaser.GameObjects.Sprite {
   constructor(scene) {
-    super(scene, 0, 0, "bullet");
+    super(scene, 0, 0, "laser");
+    scene.add.existing(this);
+    this.scene = scene;
+    this.scaleX = 0.1;
+    this.scaleY = 0.1;
+    this.x = scene.ship.x;
+    this.y = scene.ship.y;
   }
 
   fire() {
-    /* eslint-disable no-console */
-    console.log("IMMA FIRIN MA BULLETS");
+    // console.log("Fire...", this.scene);
+  }
+
+  update() {
+    this.x += 5;
   }
 }
+
+// class Bullet extends Phaser.GameObjects.Sprite {
+//   constructor(scene) {
+//     super(scene, 0, 0, "bullet");
+//     console.log(this);
+//     this.scaleX = 0.1;
+//     this.scaleY = 0.1;
+//     this.x = 300;
+//     this.y = 300;
+//     this.speed = Phaser.Math.GetSpeed(400, 1);
+//     // this.setVisible(true);
+//     // this.x = 125;
+//     // this.visible = false;
+//   }
+//
+//   fire(shipPosition) {
+//     this.visible = true;
+//     this.x += this.speed * 100;
+//     /* eslint-disable no-console */
+//     console.log("IMMA FIRIN MA BULLETS");
+//   }
+// }
 
 const config = {
   type: Phaser.AUTO,
