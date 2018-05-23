@@ -78,11 +78,15 @@ class Ship extends Phaser.GameObjects.Sprite {
       this.y -= this.MAX_SPEED;
     } else if (this.key.down.isDown) {
       this.y += this.MAX_SPEED;
-    } else if (this.key.left.isDown) {
+    }
+
+    if (this.key.left.isDown) {
       this.x -= this.MAX_SPEED;
-    } else if (this.key.right.isDown) {
+    }
+    if (this.key.right.isDown) {
       this.x += this.MAX_SPEED;
-    } else if (this.key.spacebar.isDown) {
+    }
+    if (this.key.spacebar.isDown) {
       this.fire();
     }
   }
@@ -101,6 +105,7 @@ class Laser extends Phaser.GameObjects.Sprite {
     super(scene, 0, 0, "laser");
     scene.add.existing(this);
     this.speedlazerScene = scene;
+    this.BULLET_SPEED = 15;
     this.scaleX = 0.1;
     this.scaleY = 0.1;
     this.x = scene.ship.x;
@@ -108,7 +113,7 @@ class Laser extends Phaser.GameObjects.Sprite {
   }
 
   update() {
-    this.x += 5;
+    this.x += this.BULLET_SPEED;
   }
 }
 
