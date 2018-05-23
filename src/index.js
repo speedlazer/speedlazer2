@@ -43,11 +43,11 @@ class Ship extends Phaser.GameObjects.Sprite {
     super(scene, x, y, type);
 
     this.MAX_SPEED = 5;
+    this.TIME_DELAY_BETWEEN_FIRE = 200;
     this.speedlazerScene = scene;
     scene.add.existing(this);
     this.scaleX = -1;
-
-    this.laser = null;
+    this.nextFire = 0;
   }
 
   create() {
@@ -71,8 +71,6 @@ class Ship extends Phaser.GameObjects.Sprite {
       classType: Laser,
       runChildUpdate: true // runs the update function from the specified class.
     });
-
-    // console.log(this.laser);
   }
 
   update() {
@@ -85,7 +83,15 @@ class Ship extends Phaser.GameObjects.Sprite {
     } else if (this.key.right.isDown) {
       this.x += this.MAX_SPEED;
     } else if (this.key.spacebar.isDown) {
-      this.laser.get().fire();
+      this.fire();
+    }
+  }
+
+  fire() {
+    if (this.speedlazerScene.time.now > this.nextFire) {
+      this.laser.get();
+      this.nextFire =
+        this.speedlazerScene.time.now + this.TIME_DELAY_BETWEEN_FIRE;
     }
   }
 }
@@ -94,43 +100,17 @@ class Laser extends Phaser.GameObjects.Sprite {
   constructor(scene) {
     super(scene, 0, 0, "laser");
     scene.add.existing(this);
-    this.scene = scene;
+    this.speedlazerScene = scene;
     this.scaleX = 0.1;
     this.scaleY = 0.1;
     this.x = scene.ship.x;
     this.y = scene.ship.y;
   }
 
-  fire() {
-    // console.log("Fire...", this.scene);
-  }
-
   update() {
     this.x += 5;
   }
 }
-
-// class Bullet extends Phaser.GameObjects.Sprite {
-//   constructor(scene) {
-//     super(scene, 0, 0, "bullet");
-//     console.log(this);
-//     this.scaleX = 0.1;
-//     this.scaleY = 0.1;
-//     this.x = 300;
-//     this.y = 300;
-//     this.speed = Phaser.Math.GetSpeed(400, 1);
-//     // this.setVisible(true);
-//     // this.x = 125;
-//     // this.visible = false;
-//   }
-//
-//   fire(shipPosition) {
-//     this.visible = true;
-//     this.x += this.speed * 100;
-//     /* eslint-disable no-console */
-//     console.log("IMMA FIRIN MA BULLETS");
-//   }
-// }
 
 const config = {
   type: Phaser.AUTO,
