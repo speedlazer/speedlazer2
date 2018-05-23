@@ -94,9 +94,13 @@ class Ship extends Phaser.GameObjects.Sprite {
   fire() {
     if (this.speedlazerScene.time.now > this.nextFire) {
       this.laser.get();
-      this.nextFire =
-        this.speedlazerScene.time.now + this.TIME_DELAY_BETWEEN_FIRE;
+      this.setDelayFireRate();
     }
+  }
+
+  setDelayFireRate() {
+    this.nextFire =
+      this.speedlazerScene.time.now + this.TIME_DELAY_BETWEEN_FIRE;
   }
 }
 
