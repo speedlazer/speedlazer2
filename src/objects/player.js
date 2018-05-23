@@ -1,8 +1,9 @@
 const STARTING_LIVES = 3;
 
 class Player {
-  constructor() {
+  constructor(controls) {
     this.reset();
+    this.controls = controls;
   }
 
   reset() {

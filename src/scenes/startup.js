@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import Player from "src/objects/player";
+import KeyboardControls from "src/objects/keyboard-controls";
 
 class Startup extends Phaser.Scene {
   constructor() {
@@ -7,7 +8,7 @@ class Startup extends Phaser.Scene {
   }
 
   create() {
-    const player = new Player();
+    const player = new Player(new KeyboardControls(this));
 
     this.scene.start("gameplay", { player: player });
   }

@@ -35,7 +35,6 @@ class GamePlay extends Phaser.Scene {
     this.healthText = this.add.text(400, 25, `Health: ${this.healthToBar()}`);
 
     this.ship = new PlayerShip(this);
-    this.createControls();
     this.spawnMeteor();
 
     this.physics.add.overlap(
@@ -68,10 +67,6 @@ class GamePlay extends Phaser.Scene {
     }
   }
 
-  createControls() {
-    this.cursors = this.input.keyboard.createCursorKeys();
-  }
-
   spawnMeteor() {
     const meteor = this.add.image(600, 200, "meteor");
     meteor.depth = -1;
@@ -89,6 +84,8 @@ class GamePlay extends Phaser.Scene {
     this.delta = delta;
 
     const maxTimeScore = Math.floor(this.timeScore / 3000) * 10;
+    // TODO: Assign maxTimeScore directly.
+    // use a visual score vs. playerscore compare to make the visualscore increase
     if (this.player.score < maxTimeScore) {
       this.player.score += 1;
     }
@@ -98,18 +95,8 @@ class GamePlay extends Phaser.Scene {
     this.healthText.setText(`Health: ${this.healthToBar()}`);
   }
 
-  axis(keyNegative, keyPositive) {
-    let result = 0;
-    if (keyNegative.isDown) result -= 1;
-    if (keyPositive.isDown) result += 1;
-    return result;
-  }
-
   updateShipControls() {
-    this.ship.setMovementAxis({
-      x: this.axis(this.cursors.left, this.cursors.right),
-      y: this.axis(this.cursors.up, this.cursors.down)
-    });
+    this.ship.setMovementAxis(this.player.controls.getMotionAxis());
   }
 }
 
