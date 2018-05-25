@@ -38,16 +38,24 @@ class SpeedLazer extends Phaser.Scene {
   }
 }
 
-class Ship extends Phaser.GameObjects.Sprite {
+class Ship extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, type) {
     super(scene, x, y, type);
 
-    this.MAX_SPEED = 5;
+    scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY);
+
     this.TIME_DELAY_BETWEEN_FIRE = 200;
+    this.ACCELERATION = 0.5;
     this.speedlazerScene = scene;
     scene.add.existing(this);
     this.scaleX = -1;
     this.nextFire = 0;
+
+    this.vx = 0;
+    this.vy = 0;
+    this.ax = this.ACCELERATION;
+    this.ay = this.ACCELERATION;
+    this.friction = 0.95;
   }
 
   create() {
@@ -73,22 +81,45 @@ class Ship extends Phaser.GameObjects.Sprite {
     });
   }
 
+  checkKeysUp() {
+    if (this.key.right.isUp) {
+      this.ax = 0;
+    }
+    if (this.key.left.isUp) {
+      this.ax = 0;
+    }
+    if (this.key.up.isUp) {
+      this.ay = 0;
+    } else if (this.key.down.isUp) {
+      this.ay = 0;
+    }
+  }
+
   update() {
     if (this.key.up.isDown) {
-      this.y -= this.MAX_SPEED;
+      this.ay = -this.ACCELERATION;
     } else if (this.key.down.isDown) {
-      this.y += this.MAX_SPEED;
+      this.ay = this.ACCELERATION;
     }
-
     if (this.key.left.isDown) {
-      this.x -= this.MAX_SPEED;
+      this.ax = -this.ACCELERATION;
     }
     if (this.key.right.isDown) {
-      this.x += this.MAX_SPEED;
+      this.ax = this.ACCELERATION;
     }
+
     if (this.key.spacebar.isDown) {
       this.fire();
     }
+
+    this.vx *= this.friction;
+    this.vy *= this.friction;
+    this.vx += this.ax;
+    this.vy += this.ay;
+    this.x += this.vx;
+    this.y += this.vy;
+
+    this.checkKeysUp();
   }
 
   fire() {
@@ -125,7 +156,10 @@ const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  scene: [Boot, SpeedLazer]
+  scene: [Boot, SpeedLazer],
+  physics: {
+    default: "arcade"
+  }
 };
 
 new Phaser.Game(config);
