@@ -45,6 +45,7 @@ class Ship extends Phaser.Physics.Arcade.Sprite {
     scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY);
 
     this.TIME_DELAY_BETWEEN_FIRE = 200;
+    this.body.collideWorldBounds = true;
     this.ACCELERATION = 0.9;
     this.speedlazerScene = scene;
     scene.add.existing(this);
