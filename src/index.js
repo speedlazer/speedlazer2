@@ -45,17 +45,19 @@ class Ship extends Phaser.Physics.Arcade.Sprite {
     scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY);
 
     this.TIME_DELAY_BETWEEN_FIRE = 200;
-    this.ACCELERATION = 0.5;
+    this.ACCELERATION = 0.9;
     this.speedlazerScene = scene;
     scene.add.existing(this);
-    this.scaleX = -1;
+    this.scaleX = 0.9;
+    this.scaleY = 0.9;
+    this.flipX = true;
     this.nextFire = 0;
 
     this.vx = 0;
     this.vy = 0;
     this.ax = this.ACCELERATION;
     this.ay = this.ACCELERATION;
-    this.friction = 0.95;
+    this.friction = 0.93;
   }
 
   create() {
@@ -95,7 +97,7 @@ class Ship extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  update() {
+  checkKeysDown() {
     if (this.key.up.isDown) {
       this.ay = -this.ACCELERATION;
     } else if (this.key.down.isDown) {
@@ -111,6 +113,10 @@ class Ship extends Phaser.Physics.Arcade.Sprite {
     if (this.key.spacebar.isDown) {
       this.fire();
     }
+  }
+
+  update() {
+    this.checkKeysDown();
 
     this.vx *= this.friction;
     this.vy *= this.friction;
